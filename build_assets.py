@@ -33,11 +33,13 @@ MID = "#5ECBA8"
 FONT = "Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif"
 
 BANNER = {
-    "eyebrow": "JOSH  ·  DATA ANALYST PROJECTS",
+    "eyebrow": "JOSH  ·  DATA ANALYST PORTFOLIO",
     "title": "Data analysis portfolio",
+    # Wraps automatically (up to 4 lines).
     "intro": (
-        "This GitHub is a collection of my data analyst projects as well as AI-built projects. "
-        "Each data analyst project begins with a real business question requiring an answer and goes into detail about how to solve/answer the question(s)."
+        "This is a collection of my data analysis projects in Excel, Python, SQL and Power BI "
+        "as well as my AI-made projects. Each one starts with a question or problem, works "
+        "through the data, and explains what was found."
     ),
     "tools": ["Excel", "Python", "SQL", "Power BI"],
 }
