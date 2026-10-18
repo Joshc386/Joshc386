@@ -33,12 +33,11 @@ MID = "#5ECBA8"
 FONT = "Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif"
 
 BANNER = {
-    "eyebrow": "JOSH  ·  DATA ANALYST",
+    "eyebrow": "JOSH  ·  DATA ANALYST PROJECTS",
     "title": "Data analysis portfolio",
-    # Replace this draft with your own words. It wraps automatically (up to 4 lines).
     "intro": (
-        "This GitHub collects my data analysis projects in Excel, Python, SQL and Power BI. "
-        "Each one starts with a real question, works through the data, and explains what it found."
+        "This GitHub is a collection of my data analyst projects as well as AI-built projects. "
+        "Each data analyst project begins with a real business question requiring an answer and goes into detail about how to solve/answer the question(s)."
     ),
     "tools": ["Excel", "Python", "SQL", "Power BI"],
 }
