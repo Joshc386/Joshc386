@@ -49,21 +49,21 @@ HEADERS = {
     "ai-builds": "AI-built projects",
 }
 
-# image: (path, crop box in source pixels) or None to draw a placeholder chart
+# image: chart path (shown in full, centred) or None to draw a placeholder chart
 CARDS = {
     "odds": {
         "eyebrow": "PYTHON  ·  STATISTICS",
         "title": "Premier League Odds Calibration",
         "text": "Are bookmaker odds honest? Almost exactly, but home wins turn out slightly under-priced.",
         "chips": ["Python", "pandas", "SciPy"],
-        "image": (PROJECTS / "PLOddsAnalysis/images/calibration-home-wins.png", (60, 150, 1260, 630)),
+        "image": PROJECTS / "PLOddsAnalysis/images/calibration-home-wins.png",
     },
     "sales": {
         "eyebrow": "EXCEL  ·  BUSINESS ANALYSIS",
         "title": "Sales Analysis",
         "text": "Which sales reps actually make the company money? Profit, margin and performance by rep, month and year.",
         "chips": ["Excel", "Power Query", "PivotTables"],
-        "image": (PROJECTS / "SalesReps/TotalProfitPerRep.png", (300, 230, 3250, 1390)),
+        "image": PROJECTS / "SalesReps/TotalProfitPerRep.png",
     },
     "energy": {
         "eyebrow": "EXCEL  ·  FORECASTING",
@@ -93,9 +93,9 @@ def svg(width: int, height: int, body: str) -> str:
     )
 
 
-def embed_png(path: Path, box: tuple[int, int, int, int], width: int) -> str:
-    """Crop and shrink a chart image, returning a base64 JPEG data URI."""
-    img = Image.open(path).convert("RGB").crop(box)
+def embed_png(path: Path, width: int) -> str:
+    """Shrink a chart image to `width`, returning a base64 JPEG data URI."""
+    img = Image.open(path).convert("RGB")
     img = img.resize((width, round(img.height * width / img.width)), Image.LANCZOS)
     buf = io.BytesIO()
     img.save(buf, "JPEG", quality=85, optimize=True)
@@ -133,21 +133,26 @@ def placeholder_chart(key: str) -> str:
     )
 
 
+THUMB_H = 300  # thumbnail height; tall enough to show a whole chart
+DY = THUMB_H - 230  # how far the text block sits below the original 230px layout
+
+
 def build_card(key: str, card: dict) -> str:
-    """Build one 600x460 project card SVG."""
+    """Build one 600-wide project card SVG with the chart shown in full."""
+    height = 460 + DY
     parts = [
-        f'<rect x="1" y="1" width="598" height="458" rx="20" fill="#FFFFFF" stroke="{BORDER}" stroke-width="2"/>',
-        '<clipPath id="thumb"><rect x="20" y="20" width="560" height="230" rx="12"/></clipPath>',
-        f'<rect x="20" y="20" width="560" height="230" rx="12" fill="{BG}"/>',
+        f'<rect x="1" y="1" width="598" height="{height - 2}" rx="20" fill="#FFFFFF" stroke="{BORDER}" stroke-width="2"/>',
+        f'<clipPath id="thumb"><rect x="20" y="20" width="560" height="{THUMB_H}" rx="12"/></clipPath>',
+        f'<rect x="20" y="20" width="560" height="{THUMB_H}" rx="12" fill="{BG}"/>',
     ]
     if card["image"]:
-        uri = embed_png(*card["image"], width=1120)
+        uri = embed_png(card["image"], width=1120)
         parts.append(
-            f'<rect x="20" y="20" width="560" height="230" fill="#FFFFFF" clip-path="url(#thumb)"/>'
-            f'<image href="{uri}" x="28" y="26" width="544" height="218" preserveAspectRatio="xMidYMid meet" clip-path="url(#thumb)"/>'
+            f'<rect x="20" y="20" width="560" height="{THUMB_H}" fill="#FFFFFF" clip-path="url(#thumb)"/>'
+            f'<image href="{uri}" x="28" y="28" width="544" height="{THUMB_H - 16}" preserveAspectRatio="xMidYMid meet"/>'
         )
     else:
-        parts.append(f'<g clip-path="url(#thumb)">{placeholder_chart(key)}</g>')
+        parts.append(f'<g clip-path="url(#thumb)"><g transform="translate(0,{DY // 2})">{placeholder_chart(key)}</g></g>')
     if status := card.get("status"):
         w = round(len(status) * 8 + 28)
         parts.append(
@@ -155,13 +160,13 @@ def build_card(key: str, card: dict) -> str:
             f'<text x="{564 - w / 2}" y="55" font-size="13" fill="#FFFFFF" text-anchor="middle">{escape(status)}</text>'
         )
     parts.append(
-        f'<text x="24" y="286" font-size="13" font-weight="600" fill="{ACCENT}" letter-spacing="1">{escape(card["eyebrow"])}</text>'
-        f'<text x="24" y="320" font-size="26" font-weight="600" fill="{INK}">{escape(card["title"])}</text>'
+        f'<text x="24" y="{286 + DY}" font-size="13" font-weight="600" fill="{ACCENT}" letter-spacing="1">{escape(card["eyebrow"])}</text>'
+        f'<text x="24" y="{320 + DY}" font-size="26" font-weight="600" fill="{INK}">{escape(card["title"])}</text>'
     )
     for i, line in enumerate(textwrap.wrap(card["text"], 54)[:2]):
-        parts.append(f'<text x="24" y="{352 + i * 24}" font-size="17" fill="{MUTED}">{escape(line)}</text>')
-    parts.append(chips(card["chips"], 24, 404))
-    return svg(600, 460, "".join(parts))
+        parts.append(f'<text x="24" y="{352 + DY + i * 24}" font-size="17" fill="{MUTED}">{escape(line)}</text>')
+    parts.append(chips(card["chips"], 24, 404 + DY))
+    return svg(600, height, "".join(parts))
 
 
 def build_banner() -> str:
