@@ -23,6 +23,7 @@ Larger systems I directed and reviewed, with the code written mostly by Claude.
 
 | Project | What it does | Stack |
 |---|---|---|
+| [GlobalCO2Visual](https://github.com/Joshc386/GlobalCO2Visual) | Interactive dashboard of global CO₂ emissions from 1750 to 2021, with maps, rankings and a bar chart race ([live dashboard](https://joshc386.github.io/GlobalCO2Visual/)) | D3.js · JavaScript · pandas |
 | [pl-betting-system](https://github.com/Joshc386/pl-betting-system) | Prices football goals markets with a model ensemble and Kelly staking | Python · LightGBM · SQLite |
 | [wc-bet-system](https://github.com/Joshc386/wc-bet-system) | Simulates the 2026 World Cup from Elo ratings, backtested on nine tournaments | Python · Monte Carlo |
 | [BetStatsInterface](https://github.com/Joshc386/BetStatsInterface) | Football statistics platform with scheduled data collection | PostgreSQL · FastAPI · React |
